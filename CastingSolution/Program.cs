@@ -1,5 +1,7 @@
 using CastingSolution.Data;
+using CastingSolution.Interfaces;
 using CastingSolution.Repository;
+using CastingSolution.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IEventoService, EventoService>();
+builder.Services.AddScoped<IPromotorService, PromotorService>();
 
 var app = builder.Build();
 

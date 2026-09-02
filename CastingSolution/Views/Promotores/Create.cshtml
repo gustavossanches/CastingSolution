@@ -1,0 +1,127 @@
+@model CastingSolution.Models.Promotor
+@{
+    ViewData["Title"] = "Criar Promotor";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card card-branco shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold text-bordo mb-1">Criar Promotor</h2>
+                    <p class="text-cinza mb-4">Preencha os dados do novo promotor</p>
+
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Nome" class="form-label fw-semibold">Nome</label>
+                                <input asp-for="Nome" class="form-control" placeholder="Nome completo" />
+                                <span asp-validation-for="Nome" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label fw-semibold">Email</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="email@exemplo.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Telefone" class="form-label fw-semibold">Telefone</label>
+                                <input asp-for="Telefone" class="form-control" placeholder="(00) 00000-0000" />
+                                <span asp-validation-for="Telefone" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DataNascimento" class="form-label fw-semibold">Data de Nascimento</label>
+                                <input asp-for="DataNascimento" type="date" class="form-control" />
+                                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Cidade" class="form-label fw-semibold">Cidade</label>
+                                <input asp-for="Cidade" class="form-control" placeholder="Cidade" />
+                                <span asp-validation-for="Cidade" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FuncaoPrincipal" class="form-label fw-semibold">Função Principal</label>
+                                <input asp-for="FuncaoPrincipal" class="form-control" placeholder="Ex: Recepção, Segurança" />
+                                <span asp-validation-for="FuncaoPrincipal" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Altura" class="form-label fw-semibold">Altura (cm)</label>
+                                <input asp-for="Altura" type="number" class="form-control" placeholder="170" />
+                                <span asp-validation-for="Altura" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="CorOlhos" class="form-label fw-semibold">Cor dos Olhos</label>
+                                <input asp-for="CorOlhos" class="form-control" placeholder="Ex: Castanho" />
+                                <span asp-validation-for="CorOlhos" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="CorCabelo" class="form-label fw-semibold">Cor do Cabelo</label>
+                                <input asp-for="CorCabelo" class="form-control" placeholder="Ex: Preto" />
+                                <span asp-validation-for="CorCabelo" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Genero" class="form-label fw-semibold">Gênero</label>
+                                <select asp-for="Genero" class="form-select" asp-items="Html.GetEnumSelectList<CastingSolution.Models.Enums.Genero>()">
+                                    <option value="">Selecione...</option>
+                                </select>
+                                <span asp-validation-for="Genero" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TamanhoCamiseta" class="form-label fw-semibold">Tamanho Camiseta</label>
+                                <input asp-for="TamanhoCamiseta" class="form-control" placeholder="Ex: M, G, GG" />
+                                <span asp-validation-for="TamanhoCamiseta" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="TamanhoCalca" class="form-label fw-semibold">Tamanho Calça</label>
+                                <input asp-for="TamanhoCalca" class="form-control" placeholder="Ex: 40, 42" />
+                                <span asp-validation-for="TamanhoCalca" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Observacoes" class="form-label fw-semibold">Observações</label>
+                            <textarea asp-for="Observacoes" class="form-control" rows="3" placeholder="Informações adicionais"></textarea>
+                            <span asp-validation-for="Observacoes" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input asp-for="IsFavorito" class="form-check-input" />
+                                    <label asp-for="IsFavorito" class="form-check-label fw-semibold">Favorito</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Nota" class="form-label fw-semibold">Nota (0-10)</label>
+                                <input asp-for="Nota" type="number" min="0" max="10" class="form-control" placeholder="0" />
+                                <span asp-validation-for="Nota" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-bordo">Criar Promotor</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
