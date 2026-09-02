@@ -23,11 +23,7 @@ Properties/launchSettings.json
 .DS_Store
 Thumbs.db
 
-# SQLite databases
-*.db
-*.sqlite
-*.sqlite3
-*.db-journal
-*.db-wal
-*.db-shm
+# Node / Tailwind / DaisyUI
+CastingSolution/node_modules/
+CastingSolution/wwwroot/css/output.css
 

@@ -1,27 +1,14 @@
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-custom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">CastingSolution</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Início</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Eventos" asp-action="Create">Criar Evento</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Promotores" asp-action="Create">Criar Promotor</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
-                        </li>
-                    </ul>
-            </div>
-        </div>
-    </nav>
+<header class="navbar bg-base-200 shadow-sm sticky top-0 z-50 px-6">
+    <div class="navbar-start">
+        <a class="btn btn-ghost text-xl text-primary font-bold" asp-area="" asp-controller="Home" asp-action="Index">CastingSolution</a>
+    </div>
+    <div class="navbar-center">
+        <ul class="menu menu-horizontal px-1 gap-2">
+            <li><a class="hover:text-primary" asp-area="" asp-controller="Home" asp-action="Index">Início</a></li>
+            <li><a class="hover:text-primary" asp-area="" asp-controller="Eventos" asp-action="Create">Criar Evento</a></li>
+            <li><a class="hover:text-primary" asp-area="" asp-controller="Promotores" asp-action="Create">Criar Promotor</a></li>
+            <li><a class="hover:text-primary" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a></li>
+        </ul>
+    </div>
+    <div class="navbar-end"></div>
 </header>
