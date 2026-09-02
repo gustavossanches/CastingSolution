@@ -11,6 +11,13 @@
 - Enum `Area` expandido com opções comuns de evento
 - `ApplicationDbContext` criado na pasta `Data/`, registrado no `Program.cs` e connection string configurada no `appsettings.json`
 - Relacionamentos configurados por convenção do EF Core (exclusão em cascata ativa por padrão)
+- Header e Footer movidos para `Views/Shared/_Partials/`
+- Tela inicial (Home) criada mostrando eventos ativos
+
+## TODO / Pendências
+- **AJUSTAR CORES DA PALETA**: As cores do projeto precisam ser revisadas. Aplicar corretamente: Bordô (#8E1B23) para botões principais/menu ativo/destaques, Rosa claro (#D9A7A7) para badges/fundos secundários/detalhes, Creme (#F3EFE7) fundo geral, Preto (#111111) textos principais, Branco (#FFFFFF) cards/conteúdo, Cinza (#777777) textos secundários/bordas.
+- Criar Controller e View para cadastro de Eventos (link "Criar Evento" já existe no menu)
+- Criar Controller e View para cadastro de Promotores
 
 ## Dashboard / Tela Inicial (Home)
 Ideia discutida para a Home do sistema:
@@ -21,10 +28,11 @@ Ideia discutida para a Home do sistema:
 - Botão de ação rápida **"Novo Evento"**
 
 ## Checkpoint - Última sessão
-- Configuração do SQLite concluída (DbContext, Program.cs, appsettings.json)
+- Estrutura de Views organizada com partials para Header e Footer
+- Menu com link para "Criar Evento" adicionado
 
 ### O que estamos fazendo agora
-- Criar e aplicar a migration inicial do EF Core
+- Organizar Views com partials e preparar estrutura para cadastro de Eventos
 
 ### Próximo passo (para continuar na próxima sessão)
-- Implementar Controllers e Views (ou API) para cadastro de Promotores e Eventos
+- Criar Controller Eventos com ação Create e respectiva View
