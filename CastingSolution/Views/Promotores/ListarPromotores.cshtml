@@ -1,0 +1,82 @@
+@model CastingSolution.Models.ViewModel.PromotorResumoViewModel.ListarPromotoresViewModel
+@{
+    ViewData["Title"] = "Promotores";
+}
+
+<div class="p-8 max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-primary">Promotores</h1>
+            <p class="text-base-300 mt-1">Gerencie os promotores cadastrados no sistema</p>
+        </div>
+        <a asp-controller="Promotores" asp-action="Create" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Novo Promotor
+        </a>
+    </div>
+
+    <div class="card bg-base-200 shadow-lg">
+        <div class="card-body p-0 overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr class="bg-base-300 text-base-content">
+                        <th class="px-6 py-4">Nome</th>
+                        <th class="px-6 py-4">Função Principal</th>
+                        <th class="px-6 py-4">Cidade</th>
+                        <th class="px-6 py-4">Telefone</th>
+                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4 text-center">Favorito</th>
+                        <th class="px-6 py-4 text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Promotores != null && Model.Promotores.Any())
+                    {
+                        @foreach (var promotor in Model.Promotores)
+                        {
+                            <tr class="hover">
+                                <td class="px-6 py-4 font-medium">@promotor.Nome</td>
+                                <td class="px-6 py-4">@promotor.FuncaoPrincipal</td>
+                                <td class="px-6 py-4">@promotor.Cidade</td>
+                                <td class="px-6 py-4">@promotor.Telefone</td>
+                                <td class="px-6 py-4">
+                                    <span class="badge @(promotor.Status == CastingSolution.Models.Enums.StatusPromotor.Ativo ? "badge-success" : "badge-error")">
+                                        @promotor.Status
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    @if (promotor.IsFavorito)
+                                    {
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 inline-block" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-base-300">-</span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <a asp-controller="Promotores" asp-action="Details" asp-route-id="@promotor.Id" class="btn btn-sm btn-outline btn-primary">
+                                        Ver detalhes
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-8 text-center text-base-300">
+                                Nenhum promotor cadastrado.
+                                <a asp-controller="Promotores" asp-action="Create" class="link link-primary ml-1">Cadastrar o primeiro</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

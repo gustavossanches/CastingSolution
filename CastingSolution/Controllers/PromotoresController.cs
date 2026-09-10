@@ -1,6 +1,7 @@
 using CastingSolution.Models;
 using CastingSolution.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using CastingSolution.Models.ViewModel.PromotorResumoViewModel;
 
 namespace CastingSolution.Controllers;
 
@@ -29,4 +30,16 @@ public class PromotoresController : Controller
         }
         return View(promotor);
     }
+
+    public async Task<IActionResult> ListarPromotores()
+    {
+        var PromotoresDTO = await _promotorService.ListarPromotorResumo();
+
+        var viewModel = new ListarPromotoresViewModel
+        {
+            Promotores = PromotoresDTO
+        };
+        return View(viewModel);
+    }
+
 }
