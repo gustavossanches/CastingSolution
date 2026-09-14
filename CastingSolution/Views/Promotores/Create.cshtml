@@ -1,4 +1,4 @@
-@model CastingSolution.Models.Promotor
+@model CastingSolution.Models.ViewModel.PromotorViewModel.CriarPromotorViewModel
 @{
     ViewData["Title"] = "Criar Promotor";
 }
@@ -15,7 +15,7 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div class="form-control">
                         <label class="label" asp-for="Nome">
-                            <span class="label-text font-semibold">Nome</span>
+                            <span class="label-text font-semibold">Nome <span class="text-error">*</span></span>
                         </label>
                         <input asp-for="Nome" class="input input-bordered w-full" placeholder="Nome completo" />
                         <span asp-validation-for="Nome" class="text-error text-sm"></span>
@@ -52,14 +52,12 @@
                             <span class="label-text font-semibold">Cidade</span>
                         </label>
                         <input asp-for="Cidade" class="input input-bordered w-full" placeholder="Cidade" />
-                        <span asp-validation-for="Cidade" class="text-error text-sm"></span>
                     </div>
                     <div class="form-control">
                         <label class="label" asp-for="FuncaoPrincipal">
                             <span class="label-text font-semibold">Função Principal</span>
                         </label>
                         <input asp-for="FuncaoPrincipal" class="input input-bordered w-full" placeholder="Ex: Recepção, Segurança" />
-                        <span asp-validation-for="FuncaoPrincipal" class="text-error text-sm"></span>
                     </div>
                 </div>
 
@@ -76,14 +74,12 @@
                             <span class="label-text font-semibold">Cor dos Olhos</span>
                         </label>
                         <input asp-for="CorOlhos" class="input input-bordered w-full" placeholder="Ex: Castanho" />
-                        <span asp-validation-for="CorOlhos" class="text-error text-sm"></span>
                     </div>
                     <div class="form-control">
                         <label class="label" asp-for="CorCabelo">
                             <span class="label-text font-semibold">Cor do Cabelo</span>
                         </label>
                         <input asp-for="CorCabelo" class="input input-bordered w-full" placeholder="Ex: Preto" />
-                        <span asp-validation-for="CorCabelo" class="text-error text-sm"></span>
                     </div>
                 </div>
 
@@ -95,21 +91,18 @@
                         <select asp-for="Genero" class="select select-bordered w-full" asp-items="Html.GetEnumSelectList<CastingSolution.Models.Enums.Genero>()">
                             <option value="">Selecione...</option>
                         </select>
-                        <span asp-validation-for="Genero" class="text-error text-sm"></span>
                     </div>
                     <div class="form-control">
                         <label class="label" asp-for="TamanhoCamiseta">
                             <span class="label-text font-semibold">Tamanho Camiseta</span>
                         </label>
                         <input asp-for="TamanhoCamiseta" class="input input-bordered w-full" placeholder="Ex: M, G, GG" />
-                        <span asp-validation-for="TamanhoCamiseta" class="text-error text-sm"></span>
                     </div>
                     <div class="form-control">
                         <label class="label" asp-for="TamanhoCalca">
                             <span class="label-text font-semibold">Tamanho Calça</span>
                         </label>
                         <input asp-for="TamanhoCalca" class="input input-bordered w-full" placeholder="Ex: 40, 42" />
-                        <span asp-validation-for="TamanhoCalca" class="text-error text-sm"></span>
                     </div>
                 </div>
 
@@ -118,7 +111,6 @@
                         <span class="label-text font-semibold">Observações</span>
                     </label>
                     <textarea asp-for="Observacoes" class="textarea textarea-bordered w-full" rows="3" placeholder="Informações adicionais"></textarea>
-                    <span asp-validation-for="Observacoes" class="text-error text-sm"></span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-6">

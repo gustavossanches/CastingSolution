@@ -2,6 +2,8 @@ using CastingSolution.Models;
 using CastingSolution.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CastingSolution.Models.ViewModel.PromotorResumoViewModel;
+using CastingSolution.Models.ViewModel.PromotorViewModel;
+using CastingSolution.Map;
 
 namespace CastingSolution.Controllers;
 
@@ -21,14 +23,14 @@ public class PromotoresController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Promotor promotor)
+    public async Task<IActionResult> Create(CriarPromotorViewModel viewModel)
     {
         if (ModelState.IsValid)
-        {
-            await _promotorService.CreateAsync(promotor);
+        { 
+            await _promotorService.CreateAsync(viewModel);
             return RedirectToAction("Index", "Home");
         }
-        return View(promotor);
+        return View(viewModel);
     }
 
     public async Task<IActionResult> ListarPromotores()

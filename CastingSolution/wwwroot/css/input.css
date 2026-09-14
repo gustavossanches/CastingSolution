@@ -10,7 +10,7 @@
   --color-cinza: #777777;
 }
 
-@plugin "daisyui/theme"
+@plugin "daisyui/theme" {
   name: "casting";
   default: true;
   --color-primary: #8E1B23;

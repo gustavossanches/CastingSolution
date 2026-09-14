@@ -1,8 +1,9 @@
+using CastingSolution.Interfaces;
 using CastingSolution.Models;
+using CastingSolution.Models.DTOs.PromotorDTO;
 using CastingSolution.Models.Enums;
 using CastingSolution.Repository;
-using CastingSolution.Interfaces;
-using CastingSolution.Models.DTOs.PromotorDTO;
+using CastingSolution.Models.ViewModel.PromotorViewModel;
 
 namespace CastingSolution.Services;
 
@@ -15,10 +16,12 @@ public class PromotorService : IPromotorService
         _promotorRepository = promotorRepository;
     }
 
-    public async Task CreateAsync(Promotor promotor)
+    public async Task CreateAsync(CriarPromotorViewModel promotor)
     {
-        promotor.Status = StatusPromotor.Ativo;
-        await _promotorRepository.AddAsync(promotor);
+        var promotorMapeado = Map.MapPromotor.MapToPromotor(promotor);
+        promotorMapeado.Status = StatusPromotor.Ativo;
+
+        await _promotorRepository.AddAsync(promotorMapeado);
         await _promotorRepository.SaveChangesAsync();
     }
 
@@ -28,4 +31,5 @@ public class PromotorService : IPromotorService
         var promotoresMapeados = Map.MapPromotor.MapToListaPromotorDTO(promotores.ToList());
         return promotoresMapeados;
     }
+     
 }

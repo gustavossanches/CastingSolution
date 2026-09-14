@@ -218,62 +218,52 @@ namespace CastingSolution.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Altura")
+                    b.Property<int?>("Altura")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Cidade")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CorCabelo")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CorOlhos")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DataNascimento")
+                    b.Property<DateTime?>("DataNascimento")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FuncaoPrincipal")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Genero")
+                    b.Property<int?>("Genero")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsFavorito")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Nota")
+                    b.Property<int?>("Nota")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Observacoes")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TamanhoCalca")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TamanhoCamiseta")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telefone")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
