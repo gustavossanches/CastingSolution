@@ -27,20 +27,30 @@ public class FotoPromotorService : IFotoPromotorService
         int ordem = 0;
         foreach (var foto in fotosBase64)
         {
-            string fotoBase64 = foto.Substring(foto.IndexOf(',') + 1);
             string nomeArquivo = Guid.NewGuid().ToString() + ".jpg";
             string caminhoArquivo = Path.Combine(caminhoPasta, nomeArquivo);
-            byte[] bytesFoto = Convert.FromBase64String(fotoBase64);
-            await File.WriteAllBytesAsync(caminhoArquivo, bytesFoto);
-            var fotoPromotor = new FotoPromotor
+            try
             {
-                Ordem = ordem,
-                PromotorId = promotorId,
-                CaminhoArquivo = caminhoArquivo
-            };
-            ordem = ordem++;
+                string fotoBase64 = foto.Substring(foto.IndexOf(',') + 1);
+                byte[] bytesFoto = Convert.FromBase64String(fotoBase64);
+                await File.WriteAllBytesAsync(caminhoArquivo, bytesFoto);
+                var fotoPromotor = new FotoPromotor
+                {
+                    Ordem = ordem,
+                    PromotorId = promotorId,
+                    CaminhoArquivo = caminhoArquivo,
+                    IsPrincipal = ordem == 0,
+                    DataUpload = DateTime.Now,
+                };
 
-            await _fotoPromotorRepository.AddAsync(fotoPromotor);
+                await _fotoPromotorRepository.AddAsync(fotoPromotor);
+            }
+            catch (Exception ex)
+            { 
+                File.Delete(caminhoArquivo);
+            }
+
+            ordem++;
         }
     }
 
