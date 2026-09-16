@@ -16,6 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IEventoService, EventoService>();
 builder.Services.AddScoped<IPromotorService, PromotorService>();
+builder.Services.AddScoped<IFotoPromotorService, FotoPromotorService>();
 
 var app = builder.Build();
 

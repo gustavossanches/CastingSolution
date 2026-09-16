@@ -129,6 +129,68 @@
                     </div>
                 </div>
 
+                <!-- Fotos -->
+                <div class="divider text-base-300">Fotos</div>
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="label-text font-semibold">Fotos do Promotor</span>
+                            <span id="contadorFotos" class="badge badge-sm badge-ghost">0/6</span>
+                        </div>
+                        <button type="button" id="btnAbrirModal" class="btn btn-outline btn-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Adicionar Foto
+                        </button>
+                    </div>
+                    <div id="listaFotos" class="grid grid-cols-3 gap-3"></div>
+                </div>
+
+                <!-- Container para inputs hidden das fotos (sincronizado via JS) -->
+                <div id="hiddenFotosContainer"></div>
+
+                <!-- Modal -->
+                <div id="modal" class="fixed inset-0 z-50 hidden">
+                    <div id="modalBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+                    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+                        <div id="modalBox" class="bg-base-100 rounded-box shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col transform transition-all duration-300 scale-95 opacity-0">
+                            <div class="px-6 py-4 border-b border-base-300 flex items-center justify-between">
+                                <h3 class="font-bold text-xl text-primary">Adicionar Foto</h3>
+                                <button type="button" class="btn btn-ghost btn-circle btn-sm fechar-modal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex-1 overflow-y-auto p-6">
+                                <input type="file" id="fotoInput" accept="image/*" class="file-input file-input-bordered w-full mb-4" />
+                                <div id="cropperContainer" class="hidden">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <p class="text-sm text-base-300 mb-2">Ajuste a área da foto:</p>
+                                            <div class="rounded-lg border border-base-300 bg-black" style="min-height: 300px;">
+                                                <img id="imagemCropper" src="" alt="Preview" style="display: block; max-width: 100%;" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-base-300 mb-2">Resultado:</p>
+                                            <div class="rounded-lg border border-base-300 bg-base-100 flex items-center justify-center p-4" style="min-height: 200px;">
+                                                <canvas id="previewCanvas" width="200" height="267" class="rounded-lg max-w-full"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="mensagemVazio" class="text-center text-base-300 py-12">Selecione uma foto para começar</div>
+                            </div>
+                            <div class="px-6 py-4 border-t border-base-300 flex justify-end gap-3">
+                                <button type="button" class="btn btn-ghost fechar-modal">Cancelar</button>
+                                <button type="button" id="btnConfirmar" class="btn btn-primary hidden">Confirmar Foto</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-actions justify-end gap-3">
                     <a asp-controller="Home" asp-action="Index" class="btn btn-ghost">Cancelar</a>
                     <button type="submit" class="btn btn-primary">Criar Promotor</button>
@@ -140,4 +202,203 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+    <script>
+        const MAX_FOTOS = 6;
+        let cropper = null;
+        let fotosSelecionadas = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.FotosBase64 ?? new List<string>()));
+
+        const modalFoto = document.getElementById('modal');
+        const modalContent = document.getElementById('modalBox');
+        const btnAbrirModal = document.getElementById('btnAbrirModal');
+        const fotoInput = document.getElementById('fotoInput');
+        const cropperContainer = document.getElementById('cropperContainer');
+        const mensagemVazio = document.getElementById('mensagemVazio');
+        const imagemCropper = document.getElementById('imagemCropper');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const previewCtx = previewCanvas.getContext('2d');
+        const btnConfirmarCrop = document.getElementById('btnConfirmar');
+        const listaFotos = document.getElementById('listaFotos');
+        const contadorFotos = document.getElementById('contadorFotos');
+        const hiddenFotosContainer = document.getElementById('hiddenFotosContainer');
+        const form = document.querySelector('form');
+
+        function abrirModal() {
+            modalFoto.classList.remove('hidden');
+            setTimeout(function() {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function fecharModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(function() {
+                modalFoto.classList.add('hidden');
+                resetarModal();
+            }, 300);
+        }
+
+        function resetarModal() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            fotoInput.value = '';
+            cropperContainer.classList.add('hidden');
+            mensagemVazio.classList.remove('hidden');
+            btnConfirmarCrop.classList.add('hidden');
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        }
+
+        function atualizarContador() {
+            contadorFotos.textContent = fotosSelecionadas.length + '/' + MAX_FOTOS;
+            if (fotosSelecionadas.length >= MAX_FOTOS) {
+                btnAbrirModal.disabled = true;
+                btnAbrirModal.classList.add('btn-disabled', 'opacity-50');
+                btnAbrirModal.innerHTML = 'Limite atingido';
+            } else {
+                btnAbrirModal.disabled = false;
+                btnAbrirModal.classList.remove('btn-disabled', 'opacity-50');
+                btnAbrirModal.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Adicionar Foto
+                `;
+            }
+        }
+
+        function sincronizarInputsHidden() {
+            hiddenFotosContainer.innerHTML = '';
+            fotosSelecionadas.forEach(function(foto) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'FotosBase64';
+                input.value = foto;
+                hiddenFotosContainer.appendChild(input);
+            });
+        }
+
+        function atualizarListaFotos() {
+            listaFotos.innerHTML = '';
+            if (fotosSelecionadas.length === 0) {
+                listaFotos.innerHTML = '<div class="col-span-3 text-center text-base-300 text-sm py-4">Nenhuma foto adicionada</div>';
+                atualizarContador();
+                sincronizarInputsHidden();
+                return;
+            }
+            fotosSelecionadas.forEach(function(foto, index) {
+                const div = document.createElement('div');
+                div.className = 'relative group';
+                div.innerHTML = `
+                    <div class="aspect-[3/4] w-full rounded-lg border border-base-300 overflow-hidden bg-base-300">
+                        <img src="${foto}" class="w-full h-full object-cover" />
+                    </div>
+                    <button type="button" onclick="removerFoto(${index})"
+                            class="absolute -top-2 -right-2 btn btn-circle btn-xs btn-error opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        ✕
+                    </button>
+                    ${index === 0 ? '<span class="absolute top-1 left-1 badge badge-primary badge-sm z-10">Principal</span>' : ''}
+                `;
+                listaFotos.appendChild(div);
+            });
+            atualizarContador();
+            sincronizarInputsHidden();
+        }
+
+        window.removerFoto = function(index) {
+            if (!confirm('Deseja remover esta foto?')) return;
+            fotosSelecionadas.splice(index, 1);
+            atualizarListaFotos();
+        };
+
+        btnAbrirModal.addEventListener('click', function() {
+            if (fotosSelecionadas.length >= MAX_FOTOS) {
+                alert('Você atingiu o limite máximo de ' + MAX_FOTOS + ' fotos.');
+                return;
+            }
+            resetarModal();
+            abrirModal();
+        });
+
+        document.querySelectorAll('.fechar-modal').forEach(function(botao) {
+            botao.addEventListener('click', fecharModal);
+        });
+
+        document.getElementById('modalBackdrop').addEventListener('click', fecharModal);
+
+        fotoInput.addEventListener('change', function(evento) {
+            const file = evento.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+
+                imagemCropper.src = '';
+                cropperContainer.classList.remove('hidden');
+                mensagemVazio.classList.add('hidden');
+                btnConfirmarCrop.classList.remove('hidden');
+
+                imagemCropper.onload = function() {
+                    cropper = new Cropper(imagemCropper, {
+                        aspectRatio: 3 / 4,
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                        dragMode: 'move',
+                        crop: function() {
+                            const canvas = cropper.getCroppedCanvas({
+                                width: 200,
+                                height: 267,
+                                fillColor: '#fff',
+                                imageSmoothingQuality: 'high'
+                            });
+                            if (canvas) {
+                                previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+                                previewCtx.drawImage(canvas, 0, 0, previewCanvas.width, previewCanvas.height);
+                            }
+                        }
+                    });
+                };
+
+                imagemCropper.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        btnConfirmarCrop.addEventListener('click', function() {
+            if (!cropper) return;
+            if (fotosSelecionadas.length >= MAX_FOTOS) {
+                alert('Você atingiu o limite máximo de ' + MAX_FOTOS + ' fotos.');
+                fecharModal();
+                return;
+            }
+
+            const canvas = cropper.getCroppedCanvas({
+                width: 600,
+                height: 800,
+                fillColor: '#fff',
+                imageSmoothingQuality: 'high'
+            });
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            fotosSelecionadas.push(dataUrl);
+
+            atualizarListaFotos();
+            fecharModal();
+        });
+
+        form.addEventListener('submit', function() {
+            sincronizarInputsHidden();
+        });
+
+        atualizarListaFotos();
+    </script>
 }

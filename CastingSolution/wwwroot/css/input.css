@@ -10,6 +10,12 @@
   --color-cinza: #777777;
 }
 
+@utility miniatura-foto {
+  aspect-ratio: 3 / 4;
+  height: 80px;
+  width: auto;
+}
+
 @plugin "daisyui/theme" {
   name: "casting";
   default: true;

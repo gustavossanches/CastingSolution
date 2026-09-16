@@ -58,5 +58,10 @@ namespace CastingSolution.Models.ViewModel.PromotorViewModel
         [Range(0, 10, ErrorMessage = "A nota deve ser entre 0 e 10")]
         [Display(Name = "Nota (0-10)")]
         public int? Nota { get; set; }
+
+        /// <summary>
+        /// Fotos em base64 enviadas pelo formulário para vinculação ao promotor.
+        /// </summary>
+        public List<string> FotosBase64 { get; set; } = new();
     }
 }

@@ -26,9 +26,10 @@ public class PromotoresController : Controller
     public async Task<IActionResult> Create(CriarPromotorViewModel viewModel)
     {
         if (ModelState.IsValid)
-        { 
+        {
             await _promotorService.CreateAsync(viewModel);
-            return RedirectToAction("Index", "Home");
+            TempData["sucesso"] = "Promotor criado com sucesso!";
+            return RedirectToAction("ListarPromotores");
         }
         return View(viewModel);
     }

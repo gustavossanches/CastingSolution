@@ -38,6 +38,7 @@ namespace CastingSolution.Map
                 TamanhoCalca = viewModel.TamanhoCalca,
                 Observacoes = viewModel.Observacoes,
                 IsFavorito = viewModel.IsFavorito,
+                //Fotos = viewModel.Fotos,
                 Nota = viewModel.Nota
             };
         }
