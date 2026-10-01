@@ -1,3 +1,4 @@
+using CastingSolution.Common;
 using CastingSolution.Interfaces;
 using CastingSolution.Models;
 using CastingSolution.Models.DTOs.PromotorDTO;
@@ -17,22 +18,28 @@ public class FotoPromotorService : IFotoPromotorService
         _fotoPromotorRepository = fotoPromotorRepository;
     }
 
-    public async Task SalvarFotoAsync(ICollection<String> fotosBase64, int promotorId, string nomePromotor)
+    public async Task<Result> SalvarFotoAsync(ICollection<String> fotosBase64, int promotorId, string nomePromotor)
     {
-        string nomePasta = Util.SanitizarNomePasta(nomePromotor);
+        List<string> caminhosSalvos = new List<string>();
+        List<FotoPromotor> fotosPromotor = new List<FotoPromotor>();
 
-        string caminhoPasta = "C:\\Promotores\\" + nomePasta;
-        Util.CriarDiretorio(caminhoPasta);
-
-        int ordem = 0;
-        foreach (var foto in fotosBase64)
+        try
         {
-            string nomeArquivo = Guid.NewGuid().ToString() + ".jpg";
-            string caminhoArquivo = Path.Combine(caminhoPasta, nomeArquivo);
-            try
+            string nomePasta = Util.SanitizarNomePasta(nomePromotor);
+
+            string caminhoPasta = "C:\\Promotores\\" + nomePasta;
+            Util.CriarDiretorio(caminhoPasta);
+
+
+            int ordem = 0;
+            foreach (var foto in fotosBase64)
             {
+                string nomeArquivo = Guid.NewGuid().ToString() + ".jpg";
+                string caminhoArquivo = Path.Combine(caminhoPasta, nomeArquivo);
                 string fotoBase64 = foto.Substring(foto.IndexOf(',') + 1);
                 byte[] bytesFoto = Convert.FromBase64String(fotoBase64);
+                 
+                caminhosSalvos.Add(caminhoArquivo);
                 await File.WriteAllBytesAsync(caminhoArquivo, bytesFoto);
                 var fotoPromotor = new FotoPromotor
                 {
@@ -43,20 +50,25 @@ public class FotoPromotorService : IFotoPromotorService
                     DataUpload = DateTime.Now,
                 };
 
-                await _fotoPromotorRepository.AddAsync(fotoPromotor);
+                fotosPromotor.Add(fotoPromotor);
+
+                ordem++;
             }
-            catch (Exception ex)
-            { 
+
+            await _fotoPromotorRepository.AddListAsync(fotosPromotor);
+
+        }
+        catch (Exception)
+        { 
+            foreach (var caminhoArquivo in caminhosSalvos)
+            {
                 File.Delete(caminhoArquivo);
             }
-
-            ordem++;
+            return Result.Failure(new Error("SALVAR_FOTO_ERRO", "Ocorreu um erro ao salvar as fotos do promotor."));
         }
-    }
 
-    //public async Task
-
-
+        return Result.Success();
+    } 
 
 
 }

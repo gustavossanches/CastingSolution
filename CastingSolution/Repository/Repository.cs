@@ -25,11 +25,18 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task AddAsync(T entity)
     {
         await _context.Set<T>().AddAsync(entity);
+        await SaveChangesAsync();
+    }
+    public async Task AddListAsync(ICollection<T> entities)
+    {
+        await _context.Set<T>().AddRangeAsync(entities);
+        await SaveChangesAsync();
     }
 
     public Task UpdateAsync(T entity)
     {
         _context.Set<T>().Update(entity);
+        SaveChangesAsync();
         return Task.CompletedTask;
     }
 

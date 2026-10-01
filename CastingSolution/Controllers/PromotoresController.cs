@@ -27,7 +27,13 @@ public class PromotoresController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _promotorService.CreateAsync(viewModel);
+            var resultado = await _promotorService.CreateAsync(viewModel);
+
+            if(!resultado.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, resultado.Error.Message);
+                return View(viewModel);
+            }
             TempData["sucesso"] = "Promotor criado com sucesso!";
             return RedirectToAction("ListarPromotores");
         }

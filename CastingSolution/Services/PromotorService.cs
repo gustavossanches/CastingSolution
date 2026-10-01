@@ -1,5 +1,6 @@
 using CastingSolution.Interfaces;
 using CastingSolution.Models;
+using CastingSolution.Common;
 using CastingSolution.Models.DTOs.PromotorDTO;
 using CastingSolution.Models.Enums;
 using CastingSolution.Repository;
@@ -18,18 +19,18 @@ public class PromotorService : IPromotorService
         _fotoPromotorService = fotoPromotorService;
     }
 
-    public async Task CreateAsync(CriarPromotorViewModel promotor)
+    public async Task<Result> CreateAsync(CriarPromotorViewModel promotor)
     {
         var promotorMapeado = Map.MapPromotor.MapToPromotor(promotor);
         promotorMapeado.Status = StatusPromotor.Ativo;
 
-        await _promotorRepository.AddAsync(promotorMapeado);
-        await _promotorRepository.SaveChangesAsync();
+        await _promotorRepository.AddAsync(promotorMapeado); 
 
-        if(promotor.FotosBase64.Any() == true)
+        if(promotor.FotosBase64.Any())
         {
             await _fotoPromotorService.SalvarFotoAsync(promotor.FotosBase64, promotorMapeado.Id, promotor.Nome); 
         }    
+        return Result.Success();
 
     }
 
