@@ -85,11 +85,15 @@ namespace CastingSolution.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CaminhoArquivo")
+                    b.Property<byte[]>("Conteudo")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("BLOB");
 
                     b.Property<DateTime>("DataUpload")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NomeArquivo")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Obs")
@@ -156,15 +160,19 @@ namespace CastingSolution.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CaminhoArquivo")
+                    b.Property<byte[]>("Conteudo")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("BLOB");
 
                     b.Property<DateTime>("DataUpload")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsPrincipal")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("NomeArquivo")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Ordem")
                         .HasColumnType("INTEGER");

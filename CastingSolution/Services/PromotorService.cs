@@ -1,10 +1,11 @@
+using CastingSolution.Common;
 using CastingSolution.Interfaces;
 using CastingSolution.Models;
-using CastingSolution.Common;
+using CastingSolution.Models.DTOs.PromotorDetalheDTO;
 using CastingSolution.Models.DTOs.PromotorDTO;
 using CastingSolution.Models.Enums;
-using CastingSolution.Repository;
 using CastingSolution.Models.ViewModel.PromotorViewModel;
+using CastingSolution.Repository;
 
 namespace CastingSolution.Services;
 
@@ -24,15 +25,34 @@ public class PromotorService : IPromotorService
         var promotorMapeado = Map.MapPromotor.MapToPromotor(promotor);
         promotorMapeado.Status = StatusPromotor.Ativo;
 
-        await _promotorRepository.AddAsync(promotorMapeado); 
+        await _promotorRepository.AddAsync(promotorMapeado);
 
-        if(promotor.FotosBase64.Any())
+        if (promotor.FotosBase64.Any())
         {
-            await _fotoPromotorService.SalvarFotoAsync(promotor.FotosBase64, promotorMapeado.Id, promotor.Nome); 
-        }    
+            await _fotoPromotorService.SalvarFotoAsync(promotor.FotosBase64, promotorMapeado.Id, promotor.Nome);
+        }
         return Result.Success();
 
     }
+
+
+    public async Task<PromotorDetalheDTO?> PromotorDetalhe(int promotorId)
+    {
+        var promotor = await _promotorRepository.GetByIdAsync(promotorId);
+        if (promot
+        {
+            return null;
+        }
+
+        var promotorDTO = Map.MapPromotor.MapToPromotorDetalheDTO(promotor);
+
+        var fotos = await _fotoPromotorService.BuscarFotos(promotorId);
+        promotorDTO.Fotos = fotos;
+        //fazer a busca dos documentos também
+
+        return promotorDTO;
+    }
+
 
     public async Task<ICollection<PromotorResumoDTO>> ListarPromotorResumo()
     {
@@ -40,5 +60,5 @@ public class PromotorService : IPromotorService
         var promotoresMapeados = Map.MapPromotor.MapToListaPromotorDTO(promotores.ToList());
         return promotoresMapeados;
     }
-     
+
 }

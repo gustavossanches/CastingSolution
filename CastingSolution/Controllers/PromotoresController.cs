@@ -10,10 +10,12 @@ namespace CastingSolution.Controllers;
 public class PromotoresController : Controller
 {
     private readonly IPromotorService _promotorService;
+    private readonly IFotoPromotorService _fotoPromotorService;
 
-    public PromotoresController(IPromotorService promotorService)
+    public PromotoresController(IPromotorService promotorService, IFotoPromotorService fotoPromotorService)
     {
         _promotorService = promotorService;
+        _fotoPromotorService = fotoPromotorService;
     }
 
     public IActionResult Create()
@@ -29,7 +31,7 @@ public class PromotoresController : Controller
         {
             var resultado = await _promotorService.CreateAsync(viewModel);
 
-            if(!resultado.IsSuccess)
+            if (!resultado.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, resultado.Error.Message);
                 return View(viewModel);
@@ -38,6 +40,12 @@ public class PromotoresController : Controller
             return RedirectToAction("ListarPromotores");
         }
         return View(viewModel);
+    }
+
+    public async Task<IActionResult> PromotorDetalhe(int id)
+    {
+        var promotor = await _promotorService.PromotorDetalhe(id); 
+        return View(promotor);
     }
 
     public async Task<IActionResult> ListarPromotores()
@@ -49,6 +57,12 @@ public class PromotoresController : Controller
             Promotores = PromotoresDTO
         };
         return View(viewModel);
+    }
+
+    public async Task<IActionResult> Foto(int id)
+    { 
+        var foto = await _fotoPromotorService.BuscarFoto(id);
+        return File(foto.Conteudo, "image/jpeg");
     }
 
 }

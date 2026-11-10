@@ -6,7 +6,8 @@ public class DocumentoPromotor
 {
     public int Id { get; set; }
     public int PromotorId { get; set; }
-    public string CaminhoArquivo { get; set; } = string.Empty;
+    public byte[] Conteudo { get; set; }
+    public string NomeArquivo { get; set; }
     public TipoDocumento TipoDocumento { get; set; }
     public DateTime DataUpload { get; set; }
     public StatusDocumento Status { get; set; }

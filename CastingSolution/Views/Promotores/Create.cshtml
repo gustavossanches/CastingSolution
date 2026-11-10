@@ -129,6 +129,30 @@
                     </div>
                 </div>
 
+                <!-- Documentos -->
+                <div class="divider text-base-300">Documentos</div>
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="label-text font-semibold">Documentos do Promotor</span>
+                            <span id="contadorDocs" class="badge badge-sm badge-ghost">0</span>
+                        </div>
+                        <button type="button" id="btnAdicionarDocs" class="btn btn-outline btn-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Adicionar Documento
+                        </button>
+                    </div>
+
+                    <input type="file" id="docInput" name="Arquivos" multiple class="hidden" />
+
+                    <div id="listaDocs" class="max-h-[176px] overflow-y-auto border border-base-300 rounded-lg p-3 space-y-2">
+                    </div>
+
+                    <div id="hiddenDocsContainer"></div>
+                </div>
+
                 <!-- Fotos -->
                 <div class="divider text-base-300">Fotos</div>
                 <div class="mb-6">
@@ -224,6 +248,83 @@
         const contadorFotos = document.getElementById('contadorFotos');
         const hiddenFotosContainer = document.getElementById('hiddenFotosContainer');
         const form = document.querySelector('form');
+
+        // ---- Documentos ----
+        const btnAdicionarDocs = document.getElementById('btnAdicionarDocs');
+        const docInput = document.getElementById('docInput');
+        const listaDocs = document.getElementById('listaDocs');
+        const contadorDocs = document.getElementById('contadorDocs');
+        const hiddenDocsContainer = document.getElementById('hiddenDocsContainer');
+
+        let docsSelecionados = [];
+
+        const tiposDocumento = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Html.GetEnumSelectList<CastingSolution.Models.Enums.TipoDocumento>()
+                .Select(x => new { value = x.Value, text = x.Text })));
+
+        function renderDocs() {
+            listaDocs.innerHTML = '';
+            if (docsSelecionados.length === 0) {
+                listaDocs.innerHTML = '<div class="text-center text-base-300 text-sm py-4">Nenhum documento adicionado</div>';
+            } else {
+                docsSelecionados.forEach(function(doc, index) {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center gap-2 p-2 bg-base-100 rounded border border-base-300';
+
+                    const opcoes = tiposDocumento.map(function(t) {
+                        const sel = doc.tipo === t.value ? 'selected' : '';
+                        return `<option value="${t.value}" ${sel}>${t.text}</option>`;
+                    }).join('');
+
+                    div.innerHTML = `
+                        <span class="text-lg">📄</span>
+                        <span class="flex-1 text-sm font-medium break-all">${doc.file.name}</span>
+                        <select class="select select-bordered select-sm w-44" onchange="atualizarTipoDoc(${index}, this.value)">
+                            <option value="">Selecione o tipo...</option>
+                            ${opcoes}
+                        </select>
+                        <button type="button" onclick="removerDoc(${index})"
+                                class="btn btn-circle btn-xs btn-error">✕</button>
+                    `;
+                    listaDocs.appendChild(div);
+                });
+            }
+            contadorDocs.textContent = docsSelecionados.length;
+        }
+
+        window.atualizarTipoDoc = function(index, valor) {
+            docsSelecionados[index].tipo = valor;
+        };
+
+        window.removerDoc = function(index) {
+            docsSelecionados.splice(index, 1);
+            renderDocs();
+        };
+
+        btnAdicionarDocs.addEventListener('click', function() { docInput.click(); });
+
+        docInput.addEventListener('change', function(evento) {
+            Array.from(evento.target.files).forEach(function(file) {
+                docsSelecionados.push({ file: file, tipo: '' });
+            });
+            renderDocs();
+            docInput.value = '';
+        });
+
+        function sincronizarDocs() {
+            const dt = new DataTransfer();
+            docsSelecionados.forEach(function(doc) { dt.items.add(doc.file); });
+            docInput.files = dt.files;
+
+            hiddenDocsContainer.innerHTML = '';
+            docsSelecionados.forEach(function(doc) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'DocumentosTipos';
+                input.value = doc.tipo;
+                hiddenDocsContainer.appendChild(input);
+            });
+        }
 
         function abrirModal() {
             modalFoto.classList.remove('hidden');
@@ -395,10 +496,18 @@
             fecharModal();
         });
 
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(event) {
+            const faltaTipo = docsSelecionados.some(function(d) { return d.tipo === ''; });
+            if (faltaTipo) {
+                event.preventDefault();
+                alert('Selecione o tipo de todos os documentos.');
+                return;
+            }
             sincronizarInputsHidden();
+            sincronizarDocs();
         });
 
         atualizarListaFotos();
+        renderDocs();
     </script>
 }

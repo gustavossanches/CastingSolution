@@ -1,4 +1,5 @@
 ﻿using CastingSolution.Models;
+using CastingSolution.Models.DTOs.PromotorDetalheDTO;
 using CastingSolution.Models.DTOs.PromotorDTO;
 using CastingSolution.Models.Enums;
 using CastingSolution.Models.ViewModel.PromotorViewModel;
@@ -20,6 +21,33 @@ namespace CastingSolution.Map
                 IsFavorito = p.IsFavorito
             }).ToList();
         }
+        public static PromotorDetalheDTO MapToPromotorDetalheDTO(Promotor promotor)
+        {
+
+            return new PromotorDetalheDTO
+            {
+                Id = promotor.Id,
+                Nome = promotor.Nome,
+                Email = promotor.Email,
+                FuncaoPrincipal = promotor.FuncaoPrincipal,
+                Cidade = promotor.Cidade,
+                Telefone = promotor.Telefone,
+                DataNascimento = promotor.DataNascimento,
+                Altura = promotor.Altura,
+                CorOlhos = promotor.CorOlhos,
+                CorCabelo = promotor.CorCabelo,
+                Genero = promotor.Genero,
+                TamanhoCamiseta = promotor.TamanhoCamiseta,
+                TamanhoCalca = promotor.TamanhoCalca,
+                Status = promotor.Status ?? StatusPromotor.Ativo,
+                Observacoes = promotor.Observacoes,
+                IsFavorito = promotor.IsFavorito,
+                Nota = promotor.Nota,
+                Documentos = promotor.Documentos,
+                Fotos = promotor.Fotos
+            };
+        }
+
         public static Promotor MapToPromotor(CriarPromotorViewModel viewModel)
         {
             return new Promotor

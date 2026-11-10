@@ -34,20 +34,17 @@ public class FotoPromotorService : IFotoPromotorService
             int ordem = 0;
             foreach (var foto in fotosBase64)
             {
-                string nomeArquivo = Guid.NewGuid().ToString() + ".jpg";
-                string caminhoArquivo = Path.Combine(caminhoPasta, nomeArquivo);
+                string nomeArquivo = Guid.NewGuid().ToString() + ".jpg"; 
                 string fotoBase64 = foto.Substring(foto.IndexOf(',') + 1);
-                byte[] bytesFoto = Convert.FromBase64String(fotoBase64);
-                 
-                caminhosSalvos.Add(caminhoArquivo);
-                await File.WriteAllBytesAsync(caminhoArquivo, bytesFoto);
+                byte[] bytesFoto = Convert.FromBase64String(fotoBase64); 
                 var fotoPromotor = new FotoPromotor
                 {
                     Ordem = ordem,
                     PromotorId = promotorId,
-                    CaminhoArquivo = caminhoArquivo,
+                    NomeArquivo = nomeArquivo,
                     IsPrincipal = ordem == 0,
                     DataUpload = DateTime.Now,
+                    Conteudo = bytesFoto
                 };
 
                 fotosPromotor.Add(fotoPromotor);
@@ -68,7 +65,19 @@ public class FotoPromotorService : IFotoPromotorService
         }
 
         return Result.Success();
-    } 
+    }
 
+    public async Task<List<FotoPromotor>> BuscarFotos(int id)
+    {
+        var TodasFotos = await _fotoPromotorRepository.GetAllAsync();
 
+        var fotosPromotor = TodasFotos.Where(f => f.PromotorId == id).OrderBy(f => f.Ordem).ToList();
+
+        return fotosPromotor;
+    }
+
+    public async Task<FotoPromotor?> BuscarFoto(int id)
+    {
+        return await _fotoPromotorRepository.GetByIdAsync(id);
+    }
 }
